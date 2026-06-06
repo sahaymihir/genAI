@@ -1,7 +1,8 @@
-import userModel from "../src/models/user.models.js";
-import generateToken from "../utils/generateToken.js";
-import expressAsyncHandler from "express-async-handler";
-import blacklistTokenModel from "../src/models/blacklist.model.js";
+import expressAsyncHandler from 'express-async-handler';
+
+import blacklistTokenModel from '../src/models/blacklist.model.js';
+import userModel from '../src/models/user.models.js';
+import generateToken from '../utils/generateToken.js';
 
 /**
  * @name registerUserController
@@ -22,7 +23,7 @@ const registerUserController = expressAsyncHandler(async (req, res) => {
 
     if (isUserAlreadyExists) {
         res.status(400);
-        throw new Error('User with same Username/Email already exists')
+        throw new Error('User with same Username/Email already exists');
     }
 
     const user = await userModel.create({
@@ -38,14 +39,14 @@ const registerUserController = expressAsyncHandler(async (req, res) => {
             user: {
                 _id: user._id,
                 username: user.username,
-                email: user.email
-            }
+                email: user.email,
+            },
         });
     } else {
         res.status(400);
         throw new Error('Invalid User Data');
     }
-})
+});
 
 /**
  * @name loginUserController
@@ -57,21 +58,21 @@ const loginUserController = expressAsyncHandler(async (req, res) => {
 
     const user = await userModel.findOne({ email });
 
-    if (user && await user.matchPasswords(password)) {
+    if (user && (await user.matchPasswords(password))) {
         generateToken(res, user._id);
         res.status(201).json({
             msg: 'User Logged In Successfully',
             user: {
                 _id: user._id,
                 username: user.username,
-                email: user.email
-            }
+                email: user.email,
+            },
         });
     } else {
         res.status(401);
         throw new Error('Invalid Email/Password');
     }
-})
+});
 
 /**
  * @name logoutUserController
@@ -85,10 +86,10 @@ const logoutUserController = expressAsyncHandler(async (req, res) => {
     if (token) {
         await blacklistTokenModel.create({ token });
     }
-    
+
     res.clearCookie('jwt');
     res.status(200).json({ msg: 'User logged out successfully' });
-})
+});
 
 /**
  * @name userProfileController
@@ -104,14 +105,18 @@ const userProfileController = expressAsyncHandler(async (req, res) => {
             user: {
                 _id: user._id,
                 username: user.username,
-                email: user.email
-            }
+                email: user.email,
+            },
         });
     } else {
         res.status(404);
         throw new Error('User not found');
     }
-})
+});
 
-
-export { loginUserController, registerUserController, logoutUserController, userProfileController }
+export {
+    loginUserController,
+    logoutUserController,
+    registerUserController,
+    userProfileController,
+};
