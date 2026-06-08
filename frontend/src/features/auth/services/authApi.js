@@ -6,48 +6,31 @@ const authApi = axios.create({
 });
 
 const register = async ({ username, email, password, confirmPassword }) => {
-	try {
-		const response = await authApi.post('/register', {
-			username,
-			email,
-			password,
-			confirmPassword,
-		});
-		return response.data;
-	} catch (err) {
-		console.log(err);
-	}
+	const response = await authApi.post('/register', {
+		username,
+		email,
+		password,
+		confirmPassword,
+	});
+	return response.data;
 };
 
 const login = async ({ email, password }) => {
-	try {
-		const response = await authApi.post('/login', {
-			email,
-			password,
-		});
-		return response.data;
-	} catch (err) {
-		console.log(err);
-	}
+	const response = await authApi.post('/login', {
+		email,
+		password,
+	});
+	return response.data;
 };
 
 const logout = async () => {
-	try {
-		const response = await authApi.post('/logout');
-		return response.data;
-	} catch (err) {
-		console.log(err);
-	}
+	const response = await authApi.post('/logout');
+	return response.data;
 };
 
 const userProfile = async () => {
-	try {
-		const response = await authApi.get('/profile');
-		return response.data;
-	} catch (err) {
-		console.log(err);
-	}
+	const response = await authApi.get('/profile');
+	return response.data;
 };
-
 
 export { register, login, logout, userProfile };

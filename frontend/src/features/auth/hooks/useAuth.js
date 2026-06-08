@@ -3,7 +3,7 @@ import { AuthContext } from '../authContext';
 import { login, logout, register } from '../services/authApi.js';
 import { userProfile } from '../services/authApi.js';
 import { useEffect } from 'react';
-
+import { toast } from 'react-toastify';
 const useAuth = () => {
 	const context = useContext(AuthContext);
 	const { user, setUser, loading, setLoading } = context;
@@ -13,8 +13,9 @@ const useAuth = () => {
 		try {
 			const data = await login({ email, password });
 			setUser(data.user);
-		} catch (error) {
-			console.log(error);
+            toast.success('Login Successfull');
+		} catch (err) {
+			toast.error(err.response.data.message);
 		} finally {
 			setLoading(false);
 		}
@@ -34,9 +35,10 @@ const useAuth = () => {
 				password,
 				confirmPassword,
 			});
+			toast.success('Registered Successfully');
 			setUser(data.user);
-		} catch (error) {
-			console.log(error);
+		} catch (err) {
+			toast.error(err.response.data.message);
 		} finally {
 			setLoading(false);
 		}
@@ -47,8 +49,9 @@ const useAuth = () => {
 		try {
 			await logout();
 			setUser(null);
-		} catch (error) {
-			console.log(error);
+			toast.success("Logout Successful");
+		} catch (err) {
+			toast.error(err.response.data.message);
 		} finally {
 			setLoading(false);
 		}
@@ -59,8 +62,9 @@ const useAuth = () => {
 			try {
 				const data = await userProfile();
 				setUser(data.user);
-			} catch (error) {
-				console.log(error);
+			} catch (err) {
+				console.log(err.response.data.message);
+				setUser(null);
 			} finally {
 				setLoading(false);
 			}

@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 const App = () => {
 	return (
 		<AuthProvider>
-      <ToastContainer />
+			<ToastContainer />
 			<RouterProvider router={router} />
 		</AuthProvider>
 	);

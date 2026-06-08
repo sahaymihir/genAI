@@ -20,8 +20,7 @@ const Register = () => {
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
-		await handleRegister({ username, email, password,confirmPassword });
-        toast.success('Registered Successfully')
+		await handleRegister({ username, email, password, confirmPassword });
 		navigate('/');
 	};
 	if (loading) {

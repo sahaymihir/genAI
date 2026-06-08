@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router';
 import useAuth from '../hooks/useAuth.js';
-import { toast } from 'react-toastify';
 
 const Login = () => {
 	const { loading, handleLogin } = useAuth();
@@ -18,7 +17,6 @@ const Login = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		await handleLogin({ email, password });
-		toast.success('Logged in Successfully');
 		navigate('/');
 	};
 
