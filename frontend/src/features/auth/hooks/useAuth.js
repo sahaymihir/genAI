@@ -13,7 +13,7 @@ const useAuth = () => {
 		try {
 			const data = await login({ email, password });
 			setUser(data.user);
-            toast.success('Login Successfull');
+			toast.success('Login Successfull');
 		} catch (err) {
 			toast.error(err.response.data.message);
 		} finally {
@@ -49,7 +49,7 @@ const useAuth = () => {
 		try {
 			await logout();
 			setUser(null);
-			toast.success("Logout Successful");
+			toast.success('Logout Successful');
 		} catch (err) {
 			toast.error(err.response.data.message);
 		} finally {
