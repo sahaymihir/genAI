@@ -11,6 +11,8 @@ A MERN stack AI interview prep tool that generates a structured AI interview rep
 - [Project Structure](#project-structure)
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
+- [Known Bugs](#known-bugs)
+- [TODOs](#todos)
 - [Environment Variables](#environment-variables)
 - [API Reference](#api-reference)
 
@@ -98,6 +100,19 @@ The generated report includes the following fields:
    npm install
    npm run dev    # runs 'vite'
    ```
+
+## Known Bugs
+- Frontend currently implements only authentication screens (`/login`, `/register`, `/`) and does not yet provide UI for resume upload, job description input, or interview report rendering.
+- In `frontend/src/features/auth/pages/Login.jsx` and `Register.jsx`, navigation to `/` happens immediately after submit, even when authentication fails.
+- API base URL is hardcoded in `frontend/src/features/auth/services/authApi.js` (`http://localhost:3000/api/auth`), which breaks non-local deployments unless changed manually.
+- Current frontend linting has existing issues (`react-refresh/only-export-components` in `button.jsx` and `__dirname` undefined in `vite.config.js`).
+
+## TODOs
+- Design and implement the main interview workflow frontend (resume upload, job description form, and generated report view).
+- Add frontend service layer and pages for interview endpoints (`POST /api/interview/resume`) and display structured report fields (`matchScore`, `technicalQuestions`, `behavioralQuestions`, `skillGaps`, `preparationPlan`).
+- Introduce configurable frontend API base URL via environment variables instead of hardcoded localhost values.
+- Improve auth UX with submit-state handling and conditional navigation only on successful login/register responses.
+- Resolve existing frontend lint issues and add regular lint checks to development workflow.
 
 ## Environment Variables
 
