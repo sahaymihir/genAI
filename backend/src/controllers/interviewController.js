@@ -24,7 +24,7 @@ const resumeController = expressAsyncHandler(async (req, res) => {
 	});
 
 	const interviewReport = await interviewReportModel.create({
-		user: req.user._id,
+		user: req.user.userId,
 		resume: result,
 		selfDescription,
 		jobDescription,
