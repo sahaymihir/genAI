@@ -1,9 +1,10 @@
-import express from 'express';
-import connectDB from './config/database.js';
-import authRouter from './routes/auth.routes.js';
-import { notFound, errorHandler } from '../middleware/errorMiddleware.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import express from 'express';
+import connectDB from './config/database.js';
+import { errorHandler, notFound } from './middleware/errorMiddleware.js';
+import authRouter from './routes/authRoutes.js';
+import interviewRouter from './routes/interviewRoutes.js';
 const app = express();
 
 // Database
@@ -21,6 +22,7 @@ app.use(
 
 // Get Auth Routes
 app.use('/api/auth', authRouter);
+app.use('/api/interview', interviewRouter);
 
 // Error Middleware
 app.use(notFound);

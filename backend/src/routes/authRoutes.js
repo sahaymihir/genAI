@@ -1,6 +1,11 @@
-import { Router } from "express";
-import { loginUserController, registerUserController, logoutUserController, userProfileController } from "../../controllers/auth.controller.js";
-import authUser from "../../middleware/authMiddleware.js";
+import { Router } from 'express';
+import {
+	loginUserController,
+	logoutUserController,
+	registerUserController,
+	userProfileController,
+} from '../controllers/authController.js';
+import authUser from '../middleware/authMiddleware.js';
 
 const authRouter = Router();
 /**
@@ -9,7 +14,6 @@ const authRouter = Router();
  * @access Public
  */
 authRouter.post('/register', registerUserController);
-
 
 /**
  * @route POST /api/auth/login
@@ -33,4 +37,3 @@ authRouter.post('/logout', authUser, logoutUserController);
 authRouter.get('/profile', authUser, userProfileController);
 
 export default authRouter;
-
