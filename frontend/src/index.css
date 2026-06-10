@@ -5,27 +5,13 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ── Custom utility colors ── */
 @theme {
     --color-whitesmoke: #F5F5F5;
     --color-off-black: #161616;
 }
 
-@layer base {
-    body {
-        background-color: var(--color-off-black);
-        color: var(--color-whitesmoke);
-        @apply bg-off-black text-whitesmoke;
-    }
-
-    * {
-        @apply border-border outline-ring/50;
-    }
-
-    html {
-        @apply font-sans;
-    }
-}
-
+/* ── Tailwind token aliases ── */
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Geist Variable', sans-serif;
@@ -69,6 +55,7 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* ── Default theme — used by auth pages ── */
 :root {
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
@@ -136,4 +123,89 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* ── Interview feature theme — blue/purple palette ── */
+/* Scoped to .theme-interview so it never bleeds into auth pages */
+.theme-interview {
+    --background: oklch(0.98 0.001 219.4);
+    --foreground: oklch(0.12 0.01 219.4);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.12 0.01 219.4);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.12 0.01 219.4);
+    --primary: oklch(0.42 0.22 264.36);
+    --primary-foreground: oklch(0.98 0.001 219.4);
+    --secondary: oklch(0.96 0.008 219.4);
+    --secondary-foreground: oklch(0.42 0.22 264.36);
+    --muted: oklch(0.92 0.004 219.4);
+    --muted-foreground: oklch(0.48 0.04 219.4);
+    --accent: oklch(0.52 0.22 264.36);
+    --accent-foreground: oklch(0.98 0.001 219.4);
+    --destructive: oklch(0.64 0.24 27.32);
+    --border: oklch(0.92 0.008 219.4);
+    --input: oklch(0.96 0.004 219.4);
+    --ring: oklch(0.42 0.22 264.36);
+    --chart-1: oklch(0.42 0.22 264.36);
+    --chart-2: oklch(0.52 0.22 264.36);
+    --chart-3: oklch(0.62 0.18 264.36);
+    --chart-4: oklch(0.72 0.14 264.36);
+    --chart-5: oklch(0.82 0.08 264.36);
+    --sidebar: oklch(0.98 0.001 219.4);
+    --sidebar-foreground: oklch(0.12 0.01 219.4);
+    --sidebar-primary: oklch(0.42 0.22 264.36);
+    --sidebar-primary-foreground: oklch(0.98 0.001 219.4);
+    --sidebar-accent: oklch(0.52 0.22 264.36);
+    --sidebar-accent-foreground: oklch(0.98 0.001 219.4);
+    --sidebar-border: oklch(0.92 0.008 219.4);
+    --sidebar-ring: oklch(0.42 0.22 264.36);
+}
+
+.theme-interview.dark,
+.dark .theme-interview {
+    --background: oklch(0.08 0.01 219.4);
+    --foreground: oklch(0.98 0.001 219.4);
+    --card: oklch(0.12 0.01 219.4);
+    --card-foreground: oklch(0.98 0.001 219.4);
+    --popover: oklch(0.12 0.01 219.4);
+    --popover-foreground: oklch(0.98 0.001 219.4);
+    --primary: oklch(0.58 0.24 264.36);
+    --primary-foreground: oklch(0.08 0.01 219.4);
+    --secondary: oklch(0.18 0.01 219.4);
+    --secondary-foreground: oklch(0.98 0.001 219.4);
+    --muted: oklch(0.22 0.01 219.4);
+    --muted-foreground: oklch(0.68 0.05 219.4);
+    --accent: oklch(0.62 0.26 264.36);
+    --accent-foreground: oklch(0.08 0.01 219.4);
+    --destructive: oklch(0.72 0.24 22.22);
+    --border: oklch(1 0.001 219.4 / 15%);
+    --input: oklch(1 0.001 219.4 / 20%);
+    --ring: oklch(0.58 0.24 264.36);
+    --chart-1: oklch(0.62 0.26 264.36);
+    --chart-2: oklch(0.52 0.22 264.36);
+    --chart-3: oklch(0.42 0.22 264.36);
+    --chart-4: oklch(0.32 0.18 264.36);
+    --chart-5: oklch(0.22 0.12 264.36);
+    --sidebar: oklch(0.12 0.01 219.4);
+    --sidebar-foreground: oklch(0.98 0.001 219.4);
+    --sidebar-primary: oklch(0.58 0.24 264.36);
+    --sidebar-primary-foreground: oklch(0.08 0.01 219.4);
+    --sidebar-accent: oklch(0.62 0.26 264.36);
+    --sidebar-accent-foreground: oklch(0.08 0.01 219.4);
+    --sidebar-border: oklch(1 0.001 219.4 / 15%);
+    --sidebar-ring: oklch(0.58 0.24 264.36);
+}
+
+/* ── Base styles ── */
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    /* Auth pages inherit this via body */
+    body {
+        @apply bg-off-black text-whitesmoke;
+    }
+    html {
+        @apply font-sans;
+    }
 }
