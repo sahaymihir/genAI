@@ -6,7 +6,13 @@ import { ToastContainer } from 'react-toastify';
 const App = () => {
 	return (
 		<AuthProvider>
-			<ToastContainer />
+			<ToastContainer
+				position="top-right"
+				autoClose={3000}
+				closeOnClick
+				pauseOnHover
+				theme="dark"
+			/>
 			<RouterProvider router={router} />
 		</AuthProvider>
 	);

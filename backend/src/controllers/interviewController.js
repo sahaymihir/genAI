@@ -31,12 +31,32 @@ const resumeController = expressAsyncHandler(async (req, res) => {
 		...interviewReportByAi,
 	});
 
-	res
-		.status(201)
-		.json({
-			msg: 'Interview Report Generated Successfully',
-			data: interviewReport,
-		});
+	res.status(201).json({
+		msg: 'Interview Report Generated Successfully',
+		data: interviewReport,
+	});
 });
 
-export { resumeController };
+const getReportByIdController = expressAsyncHandler(async (req, res) => {
+	const userId = req.user.userId;
+	const reportId = req.params.id;
+	const report = await interviewReportModel.find({
+		$or: [{ user: userId }, { _id: reportId }],
+	});
+
+	res.status(200).json(report);
+});
+
+const getReportsController = expressAsyncHandler(async (req, res) => {
+	const userId = req.user.userId;
+	const report = await interviewReportModel.find({ user: userId });
+
+	if (report.length > 0) {
+		res.status(200).json(report);
+	} else {
+		res.status(404);
+		throw new Error('No reports found');
+	}
+});
+
+export { resumeController, getReportByIdController, getReportsController };
