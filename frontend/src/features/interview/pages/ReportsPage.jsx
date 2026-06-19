@@ -15,11 +15,11 @@ const item = {
 };
 
 const ReportsPage = () => {
-	const { reports, loading, getAllReports } = useReport();
+	const { reports, loading, getReports } = useReport();
 
 	useEffect(() => {
-		getAllReports();
-	}, [getAllReports]);
+		getReports();
+	}, [getReports]);
 
 	return (
 		<MainLayout>
@@ -54,7 +54,7 @@ const ReportsPage = () => {
 							<p className="py-6 text-sm text-muted-foreground">No reports yet.</p>
 						)}
 						{reports.map((report) => {
-							const score = Math.round(report.matchScore * 100);
+							const score = Math.round(report.matchScore);
 							const date = new Date(report.createdAt).toLocaleDateString('en-US', {
 								month: 'short', day: 'numeric', year: 'numeric',
 							});

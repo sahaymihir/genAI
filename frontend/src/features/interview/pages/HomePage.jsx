@@ -4,7 +4,7 @@ import useReport from '../hooks/useReport';
 import { useNavigate } from 'react-router';
 
 const HomePage = () => {
-	const { loading, generateInterviewReport } = useReport();
+	const { loading, generateReport } = useReport();
 	const navigate = useNavigate();
 
 	const handleSubmit = async ({
@@ -12,7 +12,7 @@ const HomePage = () => {
 		selfDescription,
 		resumeFile,
 	}) => {
-		const data = await generateInterviewReport(
+		const data = await generateReport(
 			jobDescription,
 			selfDescription,
 			resumeFile

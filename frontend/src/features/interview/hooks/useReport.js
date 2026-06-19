@@ -17,14 +17,14 @@ const useReport = () => {
 	const generateReport = async (
 		jobDescription,
 		selfDescription,
-		resumeFile
+		resume
 	) => {
 		setLoading(true);
 		try {
 			const response = await generateInterviewReport({
 				jobDescription,
 				selfDescription,
-				resumeFile,
+				resume,
 			});
 			setReport(response.data);
 			return response.data;
@@ -39,7 +39,7 @@ const useReport = () => {
 		setLoading(true);
 		try {
 			const response = await getReportById(reportId);
-			setReport(response.report[0]);
+			setReport(response.report);
 		} catch (error) {
 			console.log(error);
 		} finally {

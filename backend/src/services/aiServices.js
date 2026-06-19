@@ -4,7 +4,7 @@ import { z } from 'zod';
 const ai = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 const interviewReportSchema = z.object({
-	matchScore: z.number(),
+	matchScore: z.number().min(0).max(100),
 	technicalQuestions: z.array(
 		z.object({
 			question: z.string(),
@@ -67,7 +67,9 @@ const generateInterviewReport = async ({
 		},
 	});
 
-	return JSON.parse(response.choices[0].message.content);
+	const parsed = JSON.parse(response.choices[0].message.content);
+
+	return interviewReportSchema.parse(parsed);
 };
 
 export default generateInterviewReport;

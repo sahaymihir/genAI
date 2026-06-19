@@ -78,11 +78,12 @@ const Roadmap = ({ plan }) => (
 const ReportDetailPage = () => {
 	const { id } = useParams();
 	const [active, setActive] = useState('technical');
-	const { report, loading, getReportById } = useReport();
+	const { report, loading, getReport } = useReport();
+	const [descOpen, setDescOpen] = useState(false);
 
 	useEffect(() => {
-		getReportById(id);
-	}, [id, getReportById]);
+		getReport(id);
+	}, [id, getReport]);
 
 	if (loading || !report) {
 		return (
@@ -93,7 +94,7 @@ const ReportDetailPage = () => {
 			</MainLayout>
 		);
 	}
-	const score = Math.round(report.matchScore * 100);
+	const score = Math.round(report.matchScore);
 
 	return (
 		<MainLayout>
@@ -120,12 +121,39 @@ const ReportDetailPage = () => {
 						</div>
 						<div className="shrink-0 text-right">
 							<p className="text-sm text-muted-foreground">Match</p>
-							<p className="mt-1 text-3xl font-semibold tabular-nums">{score}%</p>
+							<p className="mt-1 text-3xl font-semibold tabular-nums">
+								{score}%
+							</p>
 						</div>
 					</div>
-					<p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-						{report.jobDescription}
-					</p>
+					<button
+						type="button"
+						onClick={() => setDescOpen((o) => !o)}
+						className="mt-5 flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+					>
+						<motion.span
+							animate={{ rotate: descOpen ? 180 : 0 }}
+							transition={{ duration: 0.2, ease }}
+						>
+							▾
+						</motion.span>
+						About the role
+					</button>
+					<AnimatePresence initial={false}>
+						{descOpen && (
+							<motion.div
+								initial={{ height: 0, opacity: 0 }}
+								animate={{ height: 'auto', opacity: 1 }}
+								exit={{ height: 0, opacity: 0 }}
+								transition={{ duration: 0.25, ease }}
+								className="overflow-hidden"
+							>
+								<p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+									{report.jobDescription}
+								</p>
+							</motion.div>
+						)}
+					</AnimatePresence>
 
 					<div className="mt-12 flex gap-7 border-b border-border">
 						{tabs.map((tab) => {
@@ -150,7 +178,11 @@ const ReportDetailPage = () => {
 										<motion.span
 											layoutId="tab-underline"
 											className="absolute -bottom-px left-0 right-0 h-px bg-foreground"
-											transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+											transition={{
+												type: 'spring',
+												stiffness: 400,
+												damping: 32,
+											}}
 										/>
 									)}
 								</button>
