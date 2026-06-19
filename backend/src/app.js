@@ -22,7 +22,7 @@ app.use(
 
 // Get Auth Routes
 app.use('/api/auth', authRouter);
-app.use('/api/interview', interviewRouter);
+app.use('/api/report', interviewRouter);
 
 // Error Middleware
 app.use(notFound);

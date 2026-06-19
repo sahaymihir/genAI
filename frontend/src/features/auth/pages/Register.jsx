@@ -1,23 +1,15 @@
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import { Link, useNavigate } from 'react-router';
-import { useState } from 'react';
 import useAuth from '../hooks/useAuth.js';
-import {
-	ArrowRight,
-	BrainCircuit,
-	CheckCircle2,
-	Loader2,
-	Sparkles,
-} from 'lucide-react';
+
+const ease = [0.22, 1, 0.36, 1];
+
+const fieldClass =
+	'h-11 rounded-none border-0 border-b border-border bg-transparent px-0 shadow-none focus-visible:border-foreground focus-visible:ring-0';
 
 const Register = () => {
 	const navigate = useNavigate();
@@ -33,109 +25,100 @@ const Register = () => {
 		await handleRegister({ username, email, password, confirmPassword });
 		navigate('/');
 	};
+
 	if (loading) {
 		return (
-			<main className="grid min-h-screen place-items-center bg-off-black text-whitesmoke">
-				<div className="flex items-center gap-2 text-sm text-white/70">
-					<Loader2 className="size-4 animate-spin" />
-					Preparing your account...
-				</div>
+			<main className="theme-interview grid min-h-screen place-items-center bg-background text-foreground">
+				<p className="text-sm text-muted-foreground">Preparing your account…</p>
 			</main>
 		);
 	}
 
 	return (
-		<main className="min-h-screen bg-off-black text-whitesmoke">
-			<div className="mx-auto grid min-h-screen w-full max-w-6xl items-center ">
-				<Card className="mx-auto w-full max-w-md border-white/10 bg-white/[0.04] text-whitesmoke shadow-2xl shadow-black/40 ring-white/10">
-					<CardHeader className="gap-2 px-6 pt-6">
-						<CardTitle className="text-2xl font-semibold text-white">
-							Create your account
-						</CardTitle>
-						<CardDescription className="text-white/55">
-							Start building role-specific interview reports.
-						</CardDescription>
-					</CardHeader>
-					<CardContent className="px-6 pb-6">
-						<form onSubmit={submitHandler} className="flex flex-col gap-4">
-							<div className="space-y-2">
-								<Label htmlFor="username" className="text-white/80">
-									Username
-								</Label>
-								<Input
-									value={username}
-									onChange={(e) => {
-										setUsername(e.target.value);
-									}}
-									type="text"
-									id="username"
-									className="h-10 border-white/10 bg-white/5 text-white placeholder:text-white/35"
-									placeholder="John Doe"
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="email" className="text-white/80">
-									Email
-								</Label>
-								<Input
-									value={email}
-									onChange={(e) => {
-										setEmail(e.target.value);
-									}}
-									type="email"
-									id="email"
-									className="h-10 border-white/10 bg-white/5 text-white placeholder:text-white/35"
-									placeholder="johndoe@gmail.com"
-								/>
-							</div>
-							<div className="grid gap-4 sm:grid-cols-2">
-								<div className="space-y-2">
-									<Label htmlFor="password" className="text-white/80">
-										Password
-									</Label>
-									<Input
-										value={password}
-										onChange={(e) => {
-											setPassword(e.target.value);
-										}}
-										type="password"
-										id="password"
-										className="h-10 border-white/10 bg-white/5 text-white placeholder:text-white/35"
-										placeholder="Password"
-									/>
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="confirmPassword" className="text-white/80">
-										Confirm Password
-									</Label>
-									<Input
-										value={confirmPassword}
-										onChange={(e) => {
-											setConfirmPassword(e.target.value);
-										}}
-										type="password"
-										id="confirmPassword"
-										className="h-10 border-white/10 bg-white/5 text-white placeholder:text-white/35"
-										placeholder="Confirm Password"
-									/>
-								</div>
-							</div>
-							<Button type="submit" size="lg" className="mt-2 h-10 w-full gap-2">
-								Register
-								<ArrowRight className="size-4" />
-							</Button>
-						</form>
-						<p className="mt-6 text-center text-sm text-white/55">
-							Already have an account?{' '}
-							<Link
-								to="/login"
-								className="font-medium text-indigo-200 hover:text-white"
-							>
-								Login
-							</Link>
-						</p>
-					</CardContent>
-				</Card>
+		<main className="theme-interview min-h-screen bg-background text-foreground antialiased">
+			<div className="mx-auto grid min-h-screen w-full max-w-sm place-items-center px-5 py-16">
+				<motion.div
+					initial={{ opacity: 0, y: 16 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, ease }}
+					className="w-full"
+				>
+					<p className="text-sm text-muted-foreground">Get started</p>
+					<h1 className="mt-3 text-4xl font-semibold tracking-tight">
+						Create your account.
+					</h1>
+					<p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+						Start building role-specific interview reports.
+					</p>
+
+					<form onSubmit={submitHandler} className="mt-10 flex flex-col gap-8">
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="username" className="text-sm font-medium">
+								Username
+							</Label>
+							<Input
+								value={username}
+								onChange={(e) => setUsername(e.target.value)}
+								type="text"
+								id="username"
+								className={fieldClass}
+								placeholder="John Doe"
+							/>
+						</div>
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="email" className="text-sm font-medium">
+								Email
+							</Label>
+							<Input
+								value={email}
+								onChange={(e) => setEmail(e.target.value)}
+								type="email"
+								id="email"
+								className={fieldClass}
+								placeholder="johndoe@gmail.com"
+							/>
+						</div>
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="password" className="text-sm font-medium">
+								Password
+							</Label>
+							<Input
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								type="password"
+								id="password"
+								className={fieldClass}
+								placeholder="Password"
+							/>
+						</div>
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="confirmPassword" className="text-sm font-medium">
+								Confirm password
+							</Label>
+							<Input
+								value={confirmPassword}
+								onChange={(e) => setConfirmPassword(e.target.value)}
+								type="password"
+								id="confirmPassword"
+								className={fieldClass}
+								placeholder="Confirm password"
+							/>
+						</div>
+						<Button type="submit" size="lg" className="mt-1 h-11 w-full rounded-full">
+							Create account
+						</Button>
+					</form>
+
+					<p className="mt-8 text-sm text-muted-foreground">
+						Already have an account?{' '}
+						<Link
+							to="/login"
+							className="text-foreground underline-offset-4 hover:underline"
+						>
+							Sign in
+						</Link>
+					</p>
+				</motion.div>
 			</div>
 		</main>
 	);

@@ -1,24 +1,21 @@
 import { useState } from 'react';
-import {
-	ArrowRight,
-	Briefcase,
-	CheckCircle2,
-	FileText,
-	Loader2,
-	Lock,
-	Upload,
-	User,
-} from 'lucide-react';
+import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+
+const ease = [0.22, 1, 0.36, 1];
+
+const container = {
+	hidden: {},
+	show: { transition: { staggerChildren: 0.08, delayChildren: 0.05 } },
+};
+
+const item = {
+	hidden: { opacity: 0, y: 16 },
+	show: { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
+};
 
 const PreparationForm = () => {
 	const [formData, setFormData] = useState({
@@ -36,12 +33,13 @@ const PreparationForm = () => {
 			file &&
 			[
 				'application/pdf',
-				'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 			].includes(file.type)
 		) {
 			setFormData({ ...formData, resume: file });
 		} else {
-			alert('Please upload a PDF or DOCX file');
+			toast.error('Unsupported file', {
+				description: 'Please upload a PDF file.',
+			});
 			e.target.value = '';
 		}
 	};
@@ -59,12 +57,16 @@ const PreparationForm = () => {
 		e.preventDefault();
 
 		if (!formData.resume) {
-			alert('Please upload your resume');
+			toast.error('Resume required', {
+				description: 'Please upload your resume to continue.',
+			});
 			return;
 		}
 
 		if (!formData.jobDescription.trim()) {
-			alert('Please provide a job description');
+			toast.error('Job description required', {
+				description: 'Add the role you are targeting to continue.',
+			});
 			return;
 		}
 
@@ -82,127 +84,120 @@ const PreparationForm = () => {
 	};
 
 	return (
-		<section id="prepare" className="px-4 py-8 sm:px-6 lg:px-8">
-			<div className="mx-auto grid w-full max-w-7xl ">
-				<Card className="shadow-sm">
-					<CardContent className="pt-5">
-						<form onSubmit={handleSubmit} className="flex flex-col gap-6">
-							<div className="space-y-3">
-								<div className="flex items-center gap-2">
-									<FileText className="size-4 text-primary" />
-									<Label className="text-base font-semibold">Resume</Label>
-									<span className="text-sm text-destructive">*</span>
-								</div>
-								<label className="block cursor-pointer rounded-xl border border-dashed bg-muted/30 p-6 transition-colors hover:border-primary/60 hover:bg-muted/50">
-									<input
-										type="file"
-										accept=".pdf,.docx"
-										onChange={handleResumeChange}
-										disabled={isSubmitting}
-										className="sr-only"
-										aria-label="Upload resume"
-									/>
-									<div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-										<div className="flex items-center gap-4">
-											<div className="flex size-12 items-center justify-center rounded-lg bg-card text-primary shadow-sm">
-												<Upload className="size-5" />
-											</div>
-											<div>
-												<p className="font-medium text-foreground">
-													{formData.resume
-														? formData.resume.name
-														: 'Upload resume file'}
-												</p>
-												<p className="mt-1 text-sm text-muted-foreground">
-													PDF or DOCX, max 10MB
-												</p>
-											</div>
-										</div>
-										<span className="text-sm font-medium text-primary">
-											Choose file
-										</span>
-									</div>
-								</label>
-							</div>
+		<section className="px-5 py-16 sm:px-8">
+			<motion.div
+				variants={container}
+				initial="hidden"
+				animate="show"
+				className="mx-auto w-full max-w-2xl"
+			>
+				<motion.p
+					variants={item}
+					className="text-sm tracking-wide text-muted-foreground"
+				>
+					New report
+				</motion.p>
+				<motion.h1
+					variants={item}
+					className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl"
+				>
+					Prepare for an interview.
+				</motion.h1>
+				<motion.p
+					variants={item}
+					className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground"
+				>
+					Upload your resume and the role you are targeting. We turn it into a
+					focused set of questions and a short plan.
+				</motion.p>
 
-							<div className="grid gap-6 lg:grid-cols-2">
-								<div className="space-y-3">
-									<div className="flex items-center gap-2">
-										<User className="size-4 text-primary" />
-										<Label
-											htmlFor="description"
-											className="text-base font-semibold"
-										>
-											Self description
-										</Label>
-										<span className="text-sm text-muted-foreground">
-											Optional
-										</span>
-									</div>
-									<Textarea
-										id="description"
-										value={formData.description}
-										onChange={handleDescriptionChange}
-										disabled={isSubmitting}
-										placeholder="Add your background, strengths, and interview goals."
-										className="min-h-44 resize-none bg-background"
-									/>
-									<p className="text-right text-xs text-muted-foreground">
-										{formData.description.length}/500 characters
-									</p>
-								</div>
+				<motion.form
+					variants={item}
+					onSubmit={handleSubmit}
+					className="mt-12 flex flex-col gap-10"
+				>
+					<div className="flex flex-col gap-3">
+						<div className="flex items-baseline justify-between">
+							<Label className="text-sm font-medium">Resume</Label>
+							<span className="text-xs text-muted-foreground">PDF</span>
+						</div>
+						<label className="group flex cursor-pointer items-center justify-between border-b border-border pb-3 transition-colors hover:border-foreground">
+							<input
+								type="file"
+								accept=".pdf"
+								onChange={handleResumeChange}
+								disabled={isSubmitting}
+								className="sr-only"
+								aria-label="Upload resume"
+							/>
+							<span
+								className={
+									formData.resume
+										? 'text-sm text-foreground'
+										: 'text-sm text-muted-foreground'
+								}
+							>
+								{formData.resume ? formData.resume.name : 'Choose a file…'}
+							</span>
+							<span className="text-sm text-muted-foreground transition-colors group-hover:text-foreground">
+								{formData.resume ? 'Replace' : 'Browse'}
+							</span>
+						</label>
+					</div>
 
-								<div className="space-y-3">
-									<div className="flex items-center gap-2">
-										<Briefcase className="size-4 text-primary" />
-										<Label
-											htmlFor="jobDescription"
-											className="text-base font-semibold"
-										>
-											Target job description
-										</Label>
-										<span className="text-sm text-destructive">*</span>
-									</div>
-									<Textarea
-										id="jobDescription"
-										value={formData.jobDescription}
-										onChange={handleJobDescriptionChange}
-										disabled={isSubmitting}
-										placeholder="Paste the role, responsibilities, requirements, and key skills."
-										className="min-h-44 resize-none bg-background"
-									/>
-								</div>
-							</div>
+					<div className="flex flex-col gap-3">
+						<div className="flex items-baseline justify-between">
+							<Label htmlFor="jobDescription" className="text-sm font-medium">
+								Target job description
+							</Label>
+							<span className="text-xs text-muted-foreground">Required</span>
+						</div>
+						<Textarea
+							id="jobDescription"
+							value={formData.jobDescription}
+							onChange={handleJobDescriptionChange}
+							disabled={isSubmitting}
+							placeholder="Paste the role, responsibilities and key skills."
+							className="min-h-32 resize-none border-0 border-b border-border bg-transparent px-0 shadow-none focus-visible:border-foreground focus-visible:ring-0"
+						/>
+					</div>
 
-							<div className="flex flex-col gap-4 rounded-xl p-4 sm:flex-row sm:items-center sm:justify-end">
-								<Button
-									type="submit"
-									disabled={isSubmitting}
-									size="lg"
-									className="gap-2"
-								>
-									{isSuccess ? (
-										<>
-											<CheckCircle2 className="size-5" />
-											Generating report
-										</>
-									) : isSubmitting ? (
-										<>
-											<Loader2 className="size-5 animate-spin" />
-											Preparing
-										</>
-									) : (
-										<>
-											Start preparation
-											<ArrowRight className="size-5" />
-										</>
-									)}
-								</Button>
-							</div>
-						</form>
-					</CardContent>
-				</Card>
-			</div>
+					<div className="flex flex-col gap-3">
+						<div className="flex items-baseline justify-between">
+							<Label htmlFor="description" className="text-sm font-medium">
+								About you
+							</Label>
+							<span className="text-xs text-muted-foreground">Optional</span>
+						</div>
+						<Textarea
+							id="description"
+							value={formData.description}
+							onChange={handleDescriptionChange}
+							disabled={isSubmitting}
+							placeholder="Background, strengths and what you want to focus on."
+							className="min-h-24 resize-none border-0 border-b border-border bg-transparent px-0 shadow-none focus-visible:border-foreground focus-visible:ring-0"
+						/>
+						<span className="text-right text-xs text-muted-foreground">
+							{formData.description.length}/500
+						</span>
+					</div>
+
+					<div className="flex items-center justify-end">
+						<Button
+							type="submit"
+							disabled={isSubmitting}
+							size="lg"
+							className="rounded-full px-7"
+						>
+							{isSuccess
+								? 'Generating…'
+								: isSubmitting
+									? 'Preparing…'
+									: 'Generate report'}
+						</Button>
+					</div>
+				</motion.form>
+			</motion.div>
 		</section>
 	);
 };

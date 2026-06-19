@@ -3,7 +3,7 @@ import { AuthContext } from '../authContext';
 import { login, logout, register } from '../services/authApi.js';
 import { userProfile } from '../services/authApi.js';
 import { useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'sonner';
 const useAuth = () => {
 	const context = useContext(AuthContext);
 	const { user, setUser, loading, setLoading } = context;
@@ -13,9 +13,11 @@ const useAuth = () => {
 		try {
 			const data = await login({ email, password });
 			setUser(data.user);
-			toast.success('Login Successfull');
+			toast.success('Signed in', { description: 'Welcome back.' });
 		} catch (err) {
-			toast.error(err.response.data.message);
+			toast.error('Sign in failed', {
+				description: err.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -35,10 +37,14 @@ const useAuth = () => {
 				password,
 				confirmPassword,
 			});
-			toast.success('Registered Successfully');
+			toast.success('Account created', {
+				description: 'Your account is ready.',
+			});
 			setUser(data.user);
 		} catch (err) {
-			toast.error(err.response.data.message);
+			toast.error('Registration failed', {
+				description: err.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}
@@ -49,9 +55,11 @@ const useAuth = () => {
 		try {
 			await logout();
 			setUser(null);
-			toast.success('Logout Successful');
+			toast.success('Signed out', { description: 'See you soon.' });
 		} catch (err) {
-			toast.error(err.response.data.message);
+			toast.error('Sign out failed', {
+				description: err.response.data.message,
+			});
 		} finally {
 			setLoading(false);
 		}

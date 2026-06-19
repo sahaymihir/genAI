@@ -44,19 +44,25 @@ const getReportByIdController = expressAsyncHandler(async (req, res) => {
 		$or: [{ user: userId }, { _id: reportId }],
 	});
 
-	res.status(200).json(report);
+	res.status(200).json({
+        message: `Interview report wih id:${reportId} fetched successfully.`,
+		report
+    })
 });
 
-const getReportsController = expressAsyncHandler(async (req, res) => {
+const getAllReportsController = expressAsyncHandler(async (req, res) => {
 	const userId = req.user.userId;
-	const report = await interviewReportModel.find({ user: userId });
+	const reports = await interviewReportModel.find({ user: userId }).sort({cretedAt: -1}).select('-resume -jobDescription -selfDescription -_v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan');
 
-	if (report.length > 0) {
-		res.status(200).json(report);
+	if (reports.length > 0) {
+		res.status(200).json({
+        message: "Interview reports fetched successfully.",
+		reports
+    })
 	} else {
 		res.status(404);
 		throw new Error('No reports found');
 	}
 });
 
-export { resumeController, getReportByIdController, getReportsController };
+export { resumeController, getReportByIdController, getAllReportsController };

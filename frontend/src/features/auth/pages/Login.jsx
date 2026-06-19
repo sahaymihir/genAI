@@ -1,17 +1,15 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import { Link, useNavigate } from 'react-router';
-import { ArrowRight, Brain, Dot, Loader2, Shield } from 'lucide-react';
 import useAuth from '../hooks/useAuth.js';
+
+const ease = [0.22, 1, 0.36, 1];
+
+const fieldClass =
+	'h-11 rounded-none border-0 border-b border-border bg-transparent px-0 shadow-none focus-visible:border-foreground focus-visible:ring-0';
 
 const Login = () => {
 	const { loading, handleLogin } = useAuth();
@@ -27,73 +25,66 @@ const Login = () => {
 
 	if (loading) {
 		return (
-			<main className="grid min-h-screen place-items-center bg-off-black text-whitesmoke">
-				<div className="flex items-center gap-2 text-sm text-white/70">
-					<Loader2 className="size-4 animate-spin" />
-					Loading workspace...
-				</div>
+			<main className="theme-interview grid min-h-screen place-items-center bg-background text-foreground">
+				<p className="text-sm text-muted-foreground">Loading workspace…</p>
 			</main>
 		);
 	}
 
 	return (
-		<main className="min-h-screen bg-off-black text-whitesmoke">
-			<div className="mx-auto grid min-h-screen w-full max-w-6xl items-center">
+		<main className="theme-interview min-h-screen bg-background text-foreground antialiased">
+			<div className="mx-auto grid min-h-screen w-full max-w-sm place-items-center px-5">
+				<motion.div
+					initial={{ opacity: 0, y: 16 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, ease }}
+					className="w-full"
+				>
+					<p className="text-sm text-muted-foreground">Welcome back</p>
+					<h1 className="mt-3 text-4xl font-semibold tracking-tight">Sign in.</h1>
 
-				<Card className="mx-auto w-full max-w-md border-white/10 bg-white/[0.04] text-whitesmoke shadow-2xl shadow-black/40 ring-white/10">
-					<CardHeader className="gap-2 px-6 pt-6">
-						<CardTitle className="text-2xl font-semibold text-white">
-							Login
-						</CardTitle>
-					</CardHeader>
-					<CardContent className="px-6 pb-6">
-						<form onSubmit={handleSubmit} className="flex flex-col gap-5">
-							<div className="space-y-2">
-								<Label htmlFor="email" className="text-white/80">
-									Email
-								</Label>
-								<Input
-									type="email"
-									id="email"
-									value={email}
-									className="h-10 border-white/10 bg-white/5 text-white placeholder:text-white/35"
-									placeholder="johndoe@gmail.com"
-									onChange={(e) => {
-										setEmail(e.target.value);
-									}}
-								/>
-							</div>
-							<div className="space-y-2">
-								<Label htmlFor="password" className="text-white/80">
-									Password
-								</Label>
-								<Input
-									type="password"
-									id="password"
-									value={password}
-									className="h-10 border-white/10 bg-white/5 text-white placeholder:text-white/35"
-									placeholder="Enter your password"
-									onChange={(e) => {
-										setPassword(e.target.value);
-									}}
-								/>
-							</div>
-							<Button type="submit" size="lg" className="mt-1 h-10 w-full gap-2">
-								Login
-								<ArrowRight className="size-4" />
-							</Button>
-						</form>
-						<p className="mt-6 text-center text-sm text-white/55">
-							New here?{' '}
-							<Link
-								to="/register"
-								className="font-medium text-indigo-200 hover:text-white"
-							>
-								Create an account
-							</Link>
-						</p>
-					</CardContent>
-				</Card>
+					<form onSubmit={handleSubmit} className="mt-10 flex flex-col gap-8">
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="email" className="text-sm font-medium">
+								Email
+							</Label>
+							<Input
+								type="email"
+								id="email"
+								value={email}
+								className={fieldClass}
+								placeholder="johndoe@gmail.com"
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+						</div>
+						<div className="flex flex-col gap-3">
+							<Label htmlFor="password" className="text-sm font-medium">
+								Password
+							</Label>
+							<Input
+								type="password"
+								id="password"
+								value={password}
+								className={fieldClass}
+								placeholder="Enter your password"
+								onChange={(e) => setPassword(e.target.value)}
+							/>
+						</div>
+						<Button type="submit" size="lg" className="mt-1 h-11 w-full rounded-full">
+							Sign in
+						</Button>
+					</form>
+
+					<p className="mt-8 text-sm text-muted-foreground">
+						New here?{' '}
+						<Link
+							to="/register"
+							className="text-foreground underline-offset-4 hover:underline"
+						>
+							Create an account
+						</Link>
+					</p>
+				</motion.div>
 			</div>
 		</main>
 	);

@@ -5,6 +5,7 @@ import Protected from './features/auth/components/Protected';
 import GuestRoute from './features/auth/components/GuestRoute';
 import HomePage from './features/interview/pages/HomePage';
 import ReportsPage from './features/interview/pages/ReportsPage';
+import ReportDetailPage from './features/interview/pages/ReportDetailPage';
 
 const router = createBrowserRouter([
 	{
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
 		element: (
 			<Protected>
 				<ReportsPage />
+			</Protected>
+		),
+	},
+	{
+		path: '/reports/:id',
+		element: (
+			<Protected>
+				<ReportDetailPage />
 			</Protected>
 		),
 	},

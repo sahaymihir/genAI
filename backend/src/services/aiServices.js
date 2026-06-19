@@ -33,6 +33,7 @@ const interviewReportSchema = z.object({
 			tasks: z.array(z.string()),
 		})
 	),
+	jobTitle: z.string(),
 });
 
 const generateInterviewReport = async ({

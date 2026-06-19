@@ -3,7 +3,7 @@ import { Router } from 'express';
 import {
 	resumeController,
 	getReportByIdController,
-	getReportsController,
+	getAllReportsController,
 } from '../controllers/interviewController.js';
 import authUser from '../middleware/authMiddleware.js';
 import upload from '../middleware/fileUploadMiddleware.js';
@@ -27,13 +27,13 @@ interviewRouter.post(
  * @description Get interview report by id
  * @access Private
  */
-interviewRouter.get('/report/:id', authUser, getReportByIdController);
+interviewRouter.get('/:id', authUser, getReportByIdController);
 
 /**
  * @route GET /api/interview/
  * @description Get all interview reports of the user
  * @access Private
  */
-interviewRouter.get('/report', authUser, getReportsController);
+interviewRouter.get('/', authUser, getAllReportsController);
 
 export default interviewRouter;
