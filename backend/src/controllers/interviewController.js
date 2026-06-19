@@ -14,7 +14,18 @@ const resumeController = expressAsyncHandler(async (req, res) => {
 	}
 
 	const parser = new PDFParse({ data: req.file.buffer });
-	const resume = (await parser.getText()).text;
+	let resume;
+
+	try {
+		const parsedText = await parser.getText();
+		resume = parsedText.text;
+	} catch {
+		res.status(422);
+		throw new Error('Failed to parse PDF document');
+	} finally {
+		await parser.destroy();
+	}
+
 	const { selfDescription, jobDescription } = req.body;
 
 	const interviewReportByAi = await generateInterviewReport({
@@ -58,23 +69,41 @@ const getReportByIdController = expressAsyncHandler(async (req, res) => {
 
 const getAllReportsController = expressAsyncHandler(async (req, res) => {
 	const userId = req.user.userId;
-	const reports = await interviewReportModel
-		.find({ user: userId })
-		.sort({ createdAt: -1 })
-		.select({
-			resume: 0,
-			jobDescription: 0,
-			selfDescription: 0,
-			__v: 0,
-			technicalQuestions: 0,
-			behavioralQuestions: 0,
-			skillGaps: 0,
-			preparationPlan: 0,
-		});
-	console.log(reports);
+
+	const page = Math.max(parseInt(req.query.page) || 1, 1);
+	const limit = Math.min(parseInt(req.query.limit) || 10, 50);
+	const skip = (page - 1) * limit;
+
+	const filter = { user: userId };
+
+	const [reports, total] = await Promise.all([
+		interviewReportModel
+			.find(filter)
+			.sort({ createdAt: -1 })
+			.skip(skip)
+			.limit(limit)
+			.select({
+				resume: 0,
+				jobDescription: 0,
+				selfDescription: 0,
+				__v: 0,
+				technicalQuestions: 0,
+				behavioralQuestions: 0,
+				skillGaps: 0,
+				preparationPlan: 0,
+			}),
+		interviewReportModel.countDocuments(filter),
+	]);
+
 	res.status(200).json({
 		message: 'Interview reports fetched successfully.',
 		reports,
+		pagination: {
+			page,
+			limit,
+			total,
+			totalPages: Math.ceil(total / limit),
+		},
 	});
 });
 

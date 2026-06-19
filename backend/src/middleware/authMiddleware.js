@@ -1,6 +1,6 @@
 import expressAsyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
-import blacklistTokenModel from '../models/blacklist.model.js';
+import blacklistTokenModel from '../models/blacklistModel.js';
 
 const authUser = expressAsyncHandler(async (req, res, next) => {
 	const token = req.cookies.jwt;

@@ -1,8 +1,7 @@
 import expressAsyncHandler from 'express-async-handler';
-
 import generateToken from '../utils/generateToken.js';
-import blacklistTokenModel from '../models/blacklist.model.js';
-import userModel from '../models/user.models.js';
+import blacklistTokenModel from '../models/blacklistModel.js';
+import userModel from '../models/userModels.js';
 
 /**
  * @name registerUserController
@@ -60,7 +59,7 @@ const loginUserController = expressAsyncHandler(async (req, res) => {
 
 	if (user && (await user.matchPasswords(password))) {
 		generateToken(res, user._id);
-		res.status(201).json({
+		res.status(200).json({
 			msg: 'User Logged In Successfully',
 			user: {
 				_id: user._id,

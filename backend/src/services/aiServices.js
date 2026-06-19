@@ -1,7 +1,13 @@
 import Groq from 'groq-sdk';
 import { z } from 'zod';
 
-const ai = new Groq({ apiKey: process.env.GROQ_API_KEY });
+let ai;
+const getClient = () => {
+	if (!ai) {
+		ai = new Groq({ apiKey: process.env.GROQ_API_KEY });
+	}
+	return ai;
+};
 
 const interviewReportSchema = z.object({
 	matchScore: z.number().min(0).max(100),
@@ -51,7 +57,7 @@ const generateInterviewReport = async ({
 
 				## Job Description
 				${jobDescription}`;
-	const response = await ai.chat.completions.create({
+	const response = await getClient().chat.completions.create({
 		model: 'openai/gpt-oss-120b',
 		messages: [
 			{

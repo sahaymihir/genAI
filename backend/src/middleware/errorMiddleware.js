@@ -1,3 +1,5 @@
+import logger from '../config/logger.js';
+
 const notFound = (req, res, next) => {
 	const error = new Error(`Not Found - ${req.originalUrl}`);
 	res.status(404);
@@ -12,6 +14,8 @@ const errorHandler = (err, req, res, _next) => {
 		statusCode = 404;
 		message = 'Resource not found';
 	}
+
+	logger.error({ err, statusCode, path: req.originalUrl }, message);
 
 	res.status(statusCode).json({
 		message,

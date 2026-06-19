@@ -6,6 +6,8 @@ import {
 	userProfileController,
 } from '../controllers/authController.js';
 import authUser from '../middleware/authMiddleware.js';
+import validate from '../middleware/validateMiddleware.js';
+import { registerSchema, loginSchema } from '../validators/authValidator.js';
 
 const authRouter = Router();
 /**
@@ -13,14 +15,14 @@ const authRouter = Router();
  * @description Register a user
  * @access Public
  */
-authRouter.post('/register', registerUserController);
+authRouter.post('/register', validate(registerSchema), registerUserController);
 
 /**
  * @route POST /api/auth/login
  * @description Login a user
  * @access Public
  */
-authRouter.post('/login', loginUserController);
+authRouter.post('/login', validate(loginSchema), loginUserController);
 
 /**
  * @route GET /api/auth/logout
