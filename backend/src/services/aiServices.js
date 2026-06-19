@@ -41,12 +41,7 @@ const generateInterviewReport = async ({
 	selfDescription,
 	jobDescription,
 }) => {
-	const response = await ai.chat.completions.create({
-		model: 'openai/gpt-oss-120b',
-		messages: [
-			{
-				role: 'user',
-				content: `You are an expert technical recruiter and career coach. Analyze the candidate information and job description to generate a comprehensive interview preparation report. Write all answers as plain prose only — do not include code snippets, curly braces, or special characters in any answer field.
+	const prompt = `You are an expert technical recruiter and career coach. Analyze the candidate information and job description to generate a comprehensive interview preparation report. Write all answers as plain prose only — do not include code snippets, curly braces, or special characters in any answer field.
 
 				## Candidate Resume
 				${resume}
@@ -55,7 +50,13 @@ const generateInterviewReport = async ({
 				${selfDescription}
 
 				## Job Description
-				${jobDescription}`,
+				${jobDescription}`;
+	const response = await ai.chat.completions.create({
+		model: 'openai/gpt-oss-120b',
+		messages: [
+			{
+				role: 'user',
+				content: prompt,
 			},
 		],
 		response_format: {

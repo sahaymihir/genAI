@@ -14,18 +14,18 @@ const resumeController = expressAsyncHandler(async (req, res) => {
 	}
 
 	const parser = new PDFParse({ data: req.file.buffer });
-	const result = (await parser.getText()).text;
+	const resume = (await parser.getText()).text;
 	const { selfDescription, jobDescription } = req.body;
 
 	const interviewReportByAi = await generateInterviewReport({
-		result,
+		resume,
 		selfDescription,
 		jobDescription,
 	});
 
 	const interviewReport = await interviewReportModel.create({
 		user: req.user.userId,
-		resume: result,
+		resume,
 		selfDescription,
 		jobDescription,
 		...interviewReportByAi,
