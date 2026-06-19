@@ -1,149 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
 import { AnimatePresence, motion } from 'framer-motion';
 import MainLayout from '../Layouts/MainLayout';
-
-// Header info per report (job title comes from the database). The questions,
-// skill gaps and plan below are shared sample content for the UI.
-const reportMeta = {
-	'6a2860f6227505d11f959f24': {
-		role: 'Software Engineer Intern',
-		matchScore: 0.78,
-		jobDescription:
-			'Backend infrastructure role requiring AWS, RESTful APIs, NoSQL databases, scalable microservices, CI/CD, and Java or Node.js.',
-	},
-	'7b3971a7338616e22a060035': {
-		role: 'Frontend Developer',
-		matchScore: 0.86,
-		jobDescription:
-			'Web platform role focused on React, TypeScript, state management, accessibility, and design systems.',
-	},
-	'8c4a82b8449727f33b171146': {
-		role: 'Data Analyst',
-		matchScore: 0.64,
-		jobDescription:
-			'Growth analytics role covering SQL, dashboards, experimentation, and stakeholder reporting.',
-	},
-};
-
-const reportBody = {
-	technicalQuestions: [
-		{
-			question:
-				'Describe your experience building a RESTful API with Java or Node.js on AWS.',
-			intention:
-				'Assess practical knowledge of API development on cloud platforms.',
-			answer:
-				'I have built RESTful APIs using Node.js and Java on AWS. In one project I used Lambda behind API Gateway with DynamoDB, IAM roles, custom domains, and CloudWatch monitoring.',
-		},
-		{
-			question:
-				'How do you ensure scalability and reliability in a serverless architecture using AWS services?',
-			intention:
-				'Evaluate understanding of design patterns for scalable serverless systems.',
-			answer:
-				'I design stateless functions, use event-driven triggers, rely on managed services such as DynamoDB, add retries, use dead-letter queues, and monitor with CloudWatch and X-Ray.',
-		},
-		{
-			question:
-				'Explain how you would implement CI/CD pipelines for a microservice deployment.',
-			intention:
-				'Gauge familiarity with continuous integration and delivery workflows.',
-			answer:
-				'I would run tests and static checks, build a Docker image, push it to ECR, deploy to staging, run integration checks, and then promote the same artifact to production.',
-		},
-		{
-			question:
-				'What considerations would you take into account when integrating a machine learning model into a backend service?',
-			intention:
-				'Assess awareness of challenges in ML model deployment and serving.',
-			answer:
-				'I would consider latency, scaling, versioning, endpoint security, encrypted artifacts, drift monitoring, request logging, and a fallback path if inference is unavailable.',
-		},
-	],
-	behavioralQuestions: [
-		{
-			question:
-				'Tell me about a time you worked on a cross-functional team to deliver under tight deadlines.',
-			intention:
-				'Assess teamwork, communication, and ability to handle pressure.',
-			answer:
-				'Use the internship duty-allocation system as the story. Focus on clarifying requirements, collaborating across stakeholders, owning the security module, and shipping a usable internal tool.',
-		},
-		{
-			question:
-				'Describe a situation where you had to troubleshoot a production issue.',
-			intention: 'Evaluate problem-solving skills and systematic debugging.',
-			answer:
-				'Structure the answer around logs, reproduction, isolating the failing module, adding validation, redeploying, and confirming that the error rate returned to normal.',
-		},
-		{
-			question:
-				'Give an example of how you ensured code quality and maintainability.',
-			intention: 'Determine commitment to best coding practices.',
-			answer:
-				'Use a project where you added linting, formatting, tests, clear module boundaries, and pull request review habits to keep the system maintainable.',
-		},
-	],
-	skillGaps: [
-		{
-			skill: 'CI/CD pipeline design',
-			severity: 'medium',
-			description:
-				'Practice explaining end-to-end deployment flow, artifact promotion, and rollback strategy.',
-		},
-		{
-			skill: 'Microservices architecture',
-			severity: 'low',
-			description:
-				'Prepare trade-offs around service boundaries, sync vs async communication, and observability.',
-		},
-		{
-			skill: 'ML integration',
-			severity: 'high',
-			description:
-				'Rehearse model serving, latency budgets, fallback behavior, and drift monitoring.',
-		},
-	],
-	preparationPlan: [
-		{
-			day: 'Day 1',
-			focus: 'AWS serverless fundamentals',
-			tasks: [
-				'Review Lambda, API Gateway, and DynamoDB request flows',
-				'Prepare one serverless REST API architecture explanation',
-				'Write down common reliability patterns',
-			],
-		},
-		{
-			day: 'Day 2',
-			focus: 'CI/CD pipelines',
-			tasks: [
-				'Sketch build, test, package, deploy, and rollback stages',
-				'Practice explaining Docker image promotion',
-				'Review GitHub Actions or CodePipeline examples',
-			],
-		},
-		{
-			day: 'Day 3',
-			focus: 'Microservices design',
-			tasks: [
-				'Compare synchronous and asynchronous service communication',
-				'Review circuit breaker and retry patterns',
-				'Prepare an architecture diagram verbally',
-			],
-		},
-		{
-			day: 'Day 4',
-			focus: 'Behavioral stories',
-			tasks: [
-				'Write STAR answers for teamwork, debugging, and code quality',
-				'Rehearse concise versions aloud',
-				'Prepare one ownership story from each major project',
-			],
-		},
-	],
-};
+import useReport from '../hooks/useReport';
 
 const tabs = [
 	{ id: 'technical', label: 'Technical' },
@@ -219,9 +78,22 @@ const Roadmap = ({ plan }) => (
 const ReportDetailPage = () => {
 	const { id } = useParams();
 	const [active, setActive] = useState('technical');
+	const { report, loading, getReportById } = useReport();
 
-	const meta = reportMeta[id] ?? Object.values(reportMeta)[0];
-	const score = Math.round(meta.matchScore * 100);
+	useEffect(() => {
+		getReportById(id);
+	}, [id, getReportById]);
+
+	if (loading || !report) {
+		return (
+			<MainLayout>
+				<main className="px-5 py-16 sm:px-8">
+					<p className="text-sm text-muted-foreground">Loading report…</p>
+				</main>
+			</MainLayout>
+		);
+	}
+	const score = Math.round(report.matchScore * 100);
 
 	return (
 		<MainLayout>
@@ -243,7 +115,7 @@ const ReportDetailPage = () => {
 						<div>
 							<p className="text-sm text-muted-foreground">Report</p>
 							<h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-								{meta.role}
+								{report.jobTitle}
 							</h1>
 						</div>
 						<div className="shrink-0 text-right">
@@ -252,7 +124,7 @@ const ReportDetailPage = () => {
 						</div>
 					</div>
 					<p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-						{meta.jobDescription}
+						{report.jobDescription}
 					</p>
 
 					<div className="mt-12 flex gap-7 border-b border-border">
@@ -290,13 +162,13 @@ const ReportDetailPage = () => {
 						<AnimatePresence mode="wait">
 							<motion.div key={active} {...fade}>
 								{active === 'technical' && (
-									<QuestionList questions={reportBody.technicalQuestions} />
+									<QuestionList questions={report.technicalQuestions} />
 								)}
 								{active === 'behavioral' && (
-									<QuestionList questions={reportBody.behavioralQuestions} />
+									<QuestionList questions={report.behavioralQuestions} />
 								)}
 								{active === 'roadmap' && (
-									<Roadmap plan={reportBody.preparationPlan} />
+									<Roadmap plan={report.preparationPlan} />
 								)}
 							</motion.div>
 						</AnimatePresence>
@@ -305,7 +177,7 @@ const ReportDetailPage = () => {
 					<div className="mt-16 border-t border-border pt-10">
 						<h2 className="text-sm font-medium">Skill gaps</h2>
 						<div className="mt-6 divide-y divide-border">
-							{reportBody.skillGaps.map((gap) => (
+							{report.skillGaps.map((gap) => (
 								<div key={gap.skill} className="py-5 first:pt-0">
 									<div className="flex items-center gap-2.5">
 										<span

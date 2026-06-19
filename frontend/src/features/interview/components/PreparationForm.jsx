@@ -17,24 +17,16 @@ const item = {
 	show: { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
 };
 
-const PreparationForm = () => {
+const PreparationForm = ({ onSubmit, loading }) => {
 	const [formData, setFormData] = useState({
 		resume: null,
 		description: '',
 		jobDescription: '',
 	});
 
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [isSuccess, setIsSuccess] = useState(false);
-
 	const handleResumeChange = (e) => {
 		const file = e.target.files?.[0];
-		if (
-			file &&
-			[
-				'application/pdf',
-			].includes(file.type)
-		) {
+		if (file && ['application/pdf'].includes(file.type)) {
 			setFormData({ ...formData, resume: file });
 		} else {
 			toast.error('Unsupported file', {
@@ -70,17 +62,11 @@ const PreparationForm = () => {
 			return;
 		}
 
-		setIsSubmitting(true);
-
-		// Simulate API call
-		setTimeout(() => {
-			setIsSubmitting(false);
-			setIsSuccess(true);
-			setTimeout(() => {
-				setIsSuccess(false);
-				setFormData({ resume: null, description: '', jobDescription: '' });
-			}, 2000);
-		}, 1500);
+		await onSubmit({
+			jobDescription: formData.jobDescription,
+			selfDescription: formData.description,
+			resumeFile: formData.resume,
+		});
 	};
 
 	return (
@@ -126,7 +112,7 @@ const PreparationForm = () => {
 								type="file"
 								accept=".pdf"
 								onChange={handleResumeChange}
-								disabled={isSubmitting}
+								disabled={loading}
 								className="sr-only"
 								aria-label="Upload resume"
 							/>
@@ -156,7 +142,7 @@ const PreparationForm = () => {
 							id="jobDescription"
 							value={formData.jobDescription}
 							onChange={handleJobDescriptionChange}
-							disabled={isSubmitting}
+							disabled={loading}
 							placeholder="Paste the role, responsibilities and key skills."
 							className="min-h-32 resize-none border-0 border-b border-border bg-transparent px-0 shadow-none focus-visible:border-foreground focus-visible:ring-0"
 						/>
@@ -173,7 +159,7 @@ const PreparationForm = () => {
 							id="description"
 							value={formData.description}
 							onChange={handleDescriptionChange}
-							disabled={isSubmitting}
+							disabled={loading}
 							placeholder="Background, strengths and what you want to focus on."
 							className="min-h-24 resize-none border-0 border-b border-border bg-transparent px-0 shadow-none focus-visible:border-foreground focus-visible:ring-0"
 						/>
@@ -185,13 +171,13 @@ const PreparationForm = () => {
 					<div className="flex items-center justify-end">
 						<Button
 							type="submit"
-							disabled={isSubmitting}
+							disabled={loading}
 							size="lg"
 							className="rounded-full px-7"
 						>
-							{isSuccess
+							{loading
 								? 'Generating…'
-								: isSubmitting
+								: loading
 									? 'Preparing…'
 									: 'Generate report'}
 						</Button>

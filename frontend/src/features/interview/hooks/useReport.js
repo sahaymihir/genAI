@@ -3,7 +3,7 @@ import {
 	getReportById,
 	getAllReports,
 } from '../services/interviewApi.js';
-import { useContext } from 'react';
+import { useCallback,useContext } from 'react';
 import { ReportContext } from '../interviewContext.jsx';
 
 const useReport = () => {
@@ -14,7 +14,7 @@ const useReport = () => {
 	const { loading, setLoading, report, setReport, reports, setReports } =
 		context;
 
-	const generateInterviewReport = async (
+	const generateReport = async (
 		jobDescription,
 		selfDescription,
 		resumeFile
@@ -27,6 +27,7 @@ const useReport = () => {
 				resumeFile,
 			});
 			setReport(response.data);
+			return response.data;
 		} catch (error) {
 			console.log(error?.message?.data);
 		} finally {
@@ -34,19 +35,19 @@ const useReport = () => {
 		}
 	};
 
-	const getReportById = async (reportId) => {
+	const getReport = useCallback(async (reportId) => {
 		setLoading(true);
 		try {
 			const response = await getReportById(reportId);
-			setReport(response.report);
+			setReport(response.report[0]);
 		} catch (error) {
 			console.log(error);
 		} finally {
 			setLoading(false);
 		}
-	};
+	},[setLoading, setReport]);
 
-	const getAllReports = async () => {
+	const getReports = useCallback(async () => {
 		setLoading(true);
 		try {
 			const response = await getAllReports();
@@ -56,15 +57,15 @@ const useReport = () => {
 		} finally {
 			setLoading(false);
 		}
-	};
+	},[setLoading, setReports]);
 
 	return {
 		loading,
 		report,
 		reports,
-		generateInterviewReport,
-		getReportById,
-		getAllReports,
+		generateReport,
+		getReport,
+		getReports,
 	};
 };
 
