@@ -2,10 +2,12 @@ import request from 'supertest';
 import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('pdf-parse', () => ({
-	PDFParse: vi.fn().mockImplementation(() => ({
-		getText: vi.fn().mockResolvedValue({ text: 'John Doe Resume Text' }),
-		destroy: vi.fn(),
-	})),
+	PDFParse: vi.fn().mockImplementation(function () {
+		return {
+			getText: vi.fn().mockResolvedValue({ text: 'John Doe Resume Text' }),
+			destroy: vi.fn(),
+		};
+	}),
 }));
 
 vi.mock('../../services/aiServices.js', () => ({

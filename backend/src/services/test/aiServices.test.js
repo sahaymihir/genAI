@@ -3,9 +3,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const mockCreate = vi.fn();
 
 vi.mock('groq-sdk', () => ({
-	default: vi.fn().mockImplementation(() => ({
-		chat: { completions: { create: mockCreate } },
-	})),
+	default: vi.fn().mockImplementation(function () {
+		return { chat: { completions: { create: mockCreate } } };
+	}),
 }));
 
 import generateInterviewReport from '../aiServices.js';

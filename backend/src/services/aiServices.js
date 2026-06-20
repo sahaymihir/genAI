@@ -6,7 +6,7 @@ const getClient = () => {
 	if (!ai) {
 		ai = new Groq({
 			apiKey: process.env.GROQ_API_KEY,
-			timeout: 30 * 1000,
+			timeout: 60 * 1000,
 			maxRetries: 2,
 		});
 	}
@@ -64,7 +64,7 @@ const generateInterviewReport = async ({
 	const response = await getClient().chat.completions.create({
 		model: 'openai/gpt-oss-120b',
 		messages: [{ role: 'user', content: prompt }],
-		max_tokens: 2000,
+		max_tokens: 5000,
 		response_format: {
 			type: 'json_schema',
 			json_schema: {
