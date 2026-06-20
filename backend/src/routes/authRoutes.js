@@ -7,6 +7,7 @@ import {
 } from '../controllers/authController.js';
 import authUser from '../middleware/authMiddleware.js';
 import validate from '../middleware/validateMiddleware.js';
+import authLimiter from '../middleware/rateLimitMiddleware.js';
 import { registerSchema, loginSchema } from '../validators/authValidator.js';
 
 const authRouter = Router();
@@ -15,14 +16,24 @@ const authRouter = Router();
  * @description Register a user
  * @access Public
  */
-authRouter.post('/register', validate(registerSchema), registerUserController);
+authRouter.post(
+	'/register',
+	authLimiter,
+	validate(registerSchema),
+	registerUserController
+);
 
 /**
  * @route POST /api/auth/login
  * @description Login a user
  * @access Public
  */
-authRouter.post('/login', validate(loginSchema), loginUserController);
+authRouter.post(
+	'/login',
+	authLimiter,
+	validate(loginSchema),
+	loginUserController
+);
 
 /**
  * @route GET /api/auth/logout

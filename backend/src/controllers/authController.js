@@ -2,6 +2,7 @@ import expressAsyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
 import blacklistTokenModel from '../models/blacklistModel.js';
 import userModel from '../models/userModels.js';
+import jwt from 'jsonwebtoken';
 
 /**
  * @name registerUserController
@@ -83,7 +84,11 @@ const logoutUserController = expressAsyncHandler(async (req, res) => {
 	const token = req.cookies.jwt;
 
 	if (token) {
-		await blacklistTokenModel.create({ token });
+		const decoded = jwt.decode(token);
+		const expiresAt = decoded?.exp
+			? new Date(decoded.exp * 1000)
+			: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); 
+		await blacklistTokenModel.create({ token, expiresAt });
 	}
 
 	res.clearCookie('jwt');

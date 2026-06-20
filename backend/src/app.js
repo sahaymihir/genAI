@@ -6,11 +6,23 @@ import authRouter from './routes/authRoutes.js';
 import interviewRouter from './routes/interviewRoutes.js';
 import pinoHttp from 'pino-http';
 import logger from './config/logger.js';
+import helmet from 'helmet';
+import compression from 'compression';
 const app = express();
 
 // Middleware
-app.use(pinoHttp({ logger }));
-app.use(express.json());
+app.use(
+	pinoHttp({
+		logger,
+		redact: {
+			paths: ['req.headers.cookie', 'req.headers.authorization', 'res.headers["set-cookie"]'],
+			remove: true,
+		},
+	})
+);
+app.use(helmet());
+app.use(compression());
+app.use(express.json({ limit: '1mb' }));
 app.use(cookieParser());
 app.use(
 	cors({

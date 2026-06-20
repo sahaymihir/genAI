@@ -4,7 +4,11 @@ import { z } from 'zod';
 let ai;
 const getClient = () => {
 	if (!ai) {
-		ai = new Groq({ apiKey: process.env.GROQ_API_KEY });
+		ai = new Groq({
+			apiKey: process.env.GROQ_API_KEY,
+			timeout: 30 * 1000,
+			maxRetries: 2,
+		});
 	}
 	return ai;
 };
@@ -59,12 +63,8 @@ const generateInterviewReport = async ({
 				${jobDescription}`;
 	const response = await getClient().chat.completions.create({
 		model: 'openai/gpt-oss-120b',
-		messages: [
-			{
-				role: 'user',
-				content: prompt,
-			},
-		],
+		messages: [{ role: 'user', content: prompt }],
+		max_tokens: 2000,
 		response_format: {
 			type: 'json_schema',
 			json_schema: {
@@ -73,7 +73,6 @@ const generateInterviewReport = async ({
 			},
 		},
 	});
-
 	const parsed = JSON.parse(response.choices[0].message.content);
 
 	return interviewReportSchema.parse(parsed);
